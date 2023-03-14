@@ -155,7 +155,7 @@ void SwiPrologEngine::serve_query(query p) {
 	    emit query_complete(t, occurrences);
 	}
     }
-    catch(PlException ex) {
+    catch(const PlException& ex) {
 	qDebug() << t << CCP(ex);
 	emit query_exception(n, CCP(ex));
     }
@@ -340,7 +340,7 @@ bool SwiPrologEngine::in_thread::named_load(QString n, QString t, bool silent) {
 	    return rc;
 	}
     }
-    catch(PlException ex) {
+    catch(const PlException& ex) {
 	qDebug() << CCP(ex);
     }
     return false;
