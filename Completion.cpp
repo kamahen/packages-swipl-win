@@ -76,7 +76,7 @@ QString Completion::initialize(int promptPosition, QTextCursor c, QStringList &s
 	    PlTerm_tail l(Completions); // cautiously make an explicit call to close
 	    while (l.next(word))
 		strings.append(t2w(word));
-	    PlCheck(l.close());
+	    PlCheckFail(l.close());
 	}
 
 	c.setPosition(p);

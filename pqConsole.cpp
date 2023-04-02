@@ -136,24 +136,24 @@ static QString unify(const QMetaProperty& p, QObject *o, PlTerm v) {
     case PL_VARIABLE:
 	switch (pt) {
 	case PCLASS::Bool:
-	    PlCheck(v.unify_atom(p.read(o).toBool() ? A("true") : A("false")));
+	    PlCheckFail(v.unify_atom(p.read(o).toBool() ? A("true") : A("false")));
 	    OK;
 	case PCLASS::Int:
 	    if (p.isEnumType()) {
 		Q_ASSERT(!p.isFlagType());  // TBD
 		QMetaEnum e = p.enumerator();
 		if (CCP key = e.valueToKey(p.read(o).toInt())) {
-		    PlCheck(v.unify_atom(A(key)));
+		    PlCheckFail(v.unify_atom(A(key)));
 		    OK;
 		}
 	    }
-	    PlCheck(v.unify_integer(p.read(o).toInt()));
+	    PlCheckFail(v.unify_integer(p.read(o).toInt()));
 	    OK;
 	case PCLASS::UInt:
-	    PlCheck(v.unify_integer(p.read(o).toUInt()));
+	    PlCheckFail(v.unify_integer(p.read(o).toUInt()));
 	    OK;
 	case PCLASS::PSTRING:
-	    PlCheck(v.unify_atom(A(p.read(o).toString())));
+	    PlCheckFail(v.unify_atom(A(p.read(o).toString())));
 	    OK;
 	default:
 	    break;
@@ -228,7 +228,7 @@ PREDICATE(window_title, 2) {
     if (c) {
 	QWidget *w = c->parentWidget();
 	if (qobject_cast<QMainWindow*>(w)) {
-	    PlCheck(PL_A1.unify_atom(A(w->windowTitle())));
+	    PlCheckFail(PL_A1.unify_atom(A(w->windowTitle())));
 	    w->setWindowTitle(t2w(PL_A2));
 	    return TRUE;
 	}
@@ -529,8 +529,8 @@ NAMED_PREDICATE("$rl_history", rl_history, 1) {
     if (c) {
 	PlTerm_tail lines(PL_A1);
 	foreach(QString x, c->history_lines())
-	    PlCheck(lines.append(PlTerm_atom(W(x))));
-	PlCheck(lines.close());
+	    PlCheckFail(lines.append(PlTerm_atom(W(x))));
+	PlCheckFail(lines.close());
 	return TRUE;
     }
     return FALSE;
@@ -544,8 +544,8 @@ PREDICATE(tty_size, 2) {
 	QSize sz = c->fontMetrics().size(0, "Q");
 	long Rows = c->height() / sz.height();
 	long Cols = c->width() / sz.width();
-	PlCheck(PL_A1.unify_integer(Rows));
-	PlCheck(PL_A2.unify_integer(Cols));
+	PlCheckFail(PL_A1.unify_integer(Rows));
+	PlCheckFail(PL_A2.unify_integer(Cols));
 	return TRUE;
     }
     return FALSE;
@@ -588,7 +588,7 @@ PREDICATE(win_message_box, 2) {
 		if (name == "title")
 		    Title = t2w(Option[1]);
 		if (name == "icon")
-		    PlCheck(Icon.unify_term(Option[1]));
+		    PlCheckFail(Icon.unify_term(Option[1]));
 		if (name == "image")
 		    Image = t2w(Option[1]);
 		if (name == "image_scale")
@@ -708,7 +708,7 @@ PREDICATE(getOpenFileName, 4) {
 	s.stop();
 
 	if (!Choice.isEmpty()) {
-	    PlCheck(PL_A4.unify_atom(A(Choice)));
+	    PlCheckFail(PL_A4.unify_atom(A(Choice)));
 	    return TRUE;
 	}
     }
@@ -734,7 +734,7 @@ PREDICATE(getSaveFileName, 4) {
 	s.stop();
 
 	if (!Choice.isEmpty()) {
-	    PlCheck(PL_A4.unify_atom(A(Choice)));
+	    PlCheckFail(PL_A4.unify_atom(A(Choice)));
 	    return TRUE;
 	}
     }
@@ -845,8 +845,8 @@ PREDICATE(win_preference_groups, 1) {
     Preferences p;
     PlTerm_tail l(PL_A1);
     foreach (auto g, p.childGroups())
-	PlCheck(l.append(PlTerm_atom(A(g))));
-    PlCheck(l.close());
+	PlCheckFail(l.append(PlTerm_atom(A(g))));
+    PlCheckFail(l.close());
     return TRUE;
 }
 
@@ -856,8 +856,8 @@ PREDICATE(win_preference_keys, 2) {
     Preferences p;
     PlTerm_tail l(PL_A1);
     foreach (auto k, p.childKeys())
-	PlCheck(l.append(PlTerm_atom(A(k))));
-    PlCheck(l.close());
+	PlCheckFail(l.append(PlTerm_atom(A(k))));
+    PlCheckFail(l.close());
     return TRUE;
 }
 
